@@ -19,7 +19,7 @@ int main() {
             res = customerInterface();
         }
         else if (userOption == 2) {
-
+            res = employeeInterface();
         }
         else if (userOption == 3) {
             cout << "Do you want to exit? (Yes or No)" << endl;
