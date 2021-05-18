@@ -319,6 +319,7 @@ class Customer : protected Person {
         friend bool checkCustomerEmail(const string email);
         friend bool checkCustomerUsername(const string username);
         friend bool checkCustomerContactNumber(const unsigned long int contactNumber);
+        friend int customerInterface();
         friend int updateCustomerData(const Customer &obj);
         friend bool verifyCustomerID(const int id);
 };
