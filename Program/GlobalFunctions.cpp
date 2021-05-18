@@ -92,8 +92,6 @@ using namespace std;
 
 // string FileTimeLoc = "../Files/FilesData.txt";
 
-template<class T>
-int addData(const T &obj, const string FileLoc, const int indicator);
 bool contactNumberVerification(unsigned long int number);
 int customerInterface();
 bool dateVerification (const int day, const int month, const int year, const char type);
@@ -103,47 +101,6 @@ bool emailAddressVerification(const std::string email);
 int fileTimeUpdate(const int indicator);
 int numberOfRecords(std::fstream& ptr, int classSize);
 bool passwordVerification(const std::string pass);
-template<class T>
-int updateData(T &obj, const string FileLoc, const int indicator);
-template<class T>
-bool verifyID(const T &obj, const string FileLoc, const int id);
-
-template<class T>
-int addData(const T &obj, const std::string FileLoc, const int indicator) {
-    std::fstream file;
-    int res;
-    
-    res = fileTimeUpdate(indicator);
-    if (res == 404) {
-        return 404;
-    }
-
-    file.open(FileLoc, std::ios::binary | std::ios::app);
-
-    if (!file) {
-        file.open(FileLoc, std::ios::binary | std::ios::trunc | std::ios::out);
-
-        if (!file) {
-            return 404;
-        }
-        
-        file.close();
-
-        file.open(FileLoc, std::ios::binary | std::ios::app);
-
-        if (!file) {                    
-            return 404;
-        }
-    }            
-
-    file.seekg(0, std::ios::end);
-
-    file.write((char*)&obj, sizeof(T));
-
-    file.close();
-
-    return 1;
-}
 
 bool contactNumberVerification(unsigned long int number)
 {
@@ -288,7 +245,7 @@ int customerInterface() {
                     }
                     else if (userOption == 4) {
                         customerObj.modifyInfo();
-                        res = updateData(customerObj, CustomerFileLoc, 2);
+                        res = updateCustomerData(customerObj);
                         if (res == 404) {
                             cout << "File operation error!" << endl;
                             cout << "Try again later." << endl;
@@ -721,7 +678,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = employeeObj2.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(employeeObj2, EmployeeFileLoc, 3);
+                                        res = updateEmployeeData(employeeObj2);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Employee Information Not Updated!" << endl;
@@ -756,7 +713,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = employeeObj2.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(employeeObj2, EmployeeFileLoc, 3);
+                                        res = updateEmployeeData(employeeObj2);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Employee Information Not Updated!" << endl;
@@ -791,7 +748,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = employeeObj2.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(employeeObj2, EmployeeFileLoc, 3);
+                                        res = updateEmployeeData(employeeObj2);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Employee Information Not Updated!" << endl;
@@ -826,7 +783,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = employeeObj2.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(employeeObj2, EmployeeFileLoc, 3);
+                                        res = updateEmployeeData(employeeObj2);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Employee Information Not Updated!" << endl;
@@ -1008,7 +965,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = cowObj.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(cowObj, CowFileLoc, 0);
+                                        res = updateCowData(cowObj);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Cow Information Not Updated!" << endl;
@@ -1155,7 +1112,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = customerObj.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(customerObj, CustomerFileLoc, 2);
+                                        res = updateCustomerData(customerObj);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Customer Information Not Updated!" << endl;
@@ -1190,7 +1147,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = customerObj.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(customerObj, CustomerFileLoc, 2);
+                                        res = updateCustomerData(customerObj);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Customer Information Not Updated!" << endl;
@@ -1225,7 +1182,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = customerObj.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(customerObj, CustomerFileLoc, 2);
+                                        res = updateCustomerData(customerObj);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Customer Information Not Updated!" << endl;
@@ -1260,7 +1217,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     resBool = customerObj.modifyInfo();
                                     if (resBool) {
-                                        res = updateData(customerObj, CustomerFileLoc, 2);
+                                        res = updateCustomerData(customerObj);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
                                             cout << "Customer Information Not Updated!" << endl;
@@ -2265,7 +2222,7 @@ int employeeInterface() {
                             else if (res == 1) {
                                 resBool = productObj.modifyInfo();
                                 if (resBool) {
-                                    res = updateData(productObj, ProductFileLoc, 8);
+                                    res = updateProductData(productObj);
                                     if (res == 404) {
                                         cout << "File operation error!" << endl;
                                         cout << "Product Information Not Updated!" << endl;
@@ -2358,7 +2315,7 @@ int employeeInterface() {
                             else if (res == 1) {
                                 resBool = expenseObj.modifyInfo();
                                 if (resBool) {
-                                    res = updateData(expenseObj, ExpenseFileLoc, 4);
+                                    res = updateExpenseData(expenseObj);
                                     if (res == 404) {
                                         cout << "File operation error!" << endl;
                                         cout << "Expense Information Not Updated!" << endl;
@@ -2748,7 +2705,7 @@ int employeeInterface() {
                     else if (userOption == 25) {
                         resBool = employeeObj.modifyInfo();
                         if (resBool) {
-                            res = updateData(employeeObj, EmployeeFileLoc, 3);
+                            res = updateEmployeeData(employeeObj);
                             if (res == 404) {
                                 cout << "File operation error!" << endl;
                                 cout << "Employee Information Not Updated!" << endl;
@@ -2888,75 +2845,4 @@ bool passwordVerification(const std::string pass)
     {
         return true;
     }
-}
-
-template<class T>
-int updateData(T &obj, const string FileLoc, const int indicator) {
-    fstream file;
-    T object;
-    int location, res;
-
-    res = fileTimeUpdate(indicator);
-    if (res == 404) {
-        return 404;
-    }
-
-    file.open(FileLoc, ios::binary | ios::in);
-    
-    if (!file) {
-        return 404;
-    }
-
-    do {
-        file.read((char*)&object, sizeof(T));
-    } while (obj.getID() != object.getID());
-
-    location = file.tellg();    
-
-    file.close();
-
-    file.open(FileLoc, ios::binary | ios::out);
-    
-    if (!file) {
-        return 404;
-    }
-
-    location -= sizeof(T);
-    file.seekg(0, ios::beg);
-    file.seekg(location, ios::cur);
-    file.seekg(0, ios::cur);    
-
-    file.write((char*)&obj, sizeof(T));
-
-    file.close();
-
-    return 1; 
-}
-
-template<class T>
-bool verifyID(const T &obj, const string FileLoc, const int id)  {
-    fstream file;
-    T object;
-    int fileSize, counter;
-
-    file.open(FileLoc, ios::binary | ios::in);
-
-    if (!file) {
-        return true;
-    }
-
-    fileSize = numberOfRecords(file, sizeof(T));
-
-    for (counter = 0; counter < fileSize; counter++) {
-        file.read((char*)&object, sizeof(T));
-
-        if (object->getID() == id) {
-            file.close();
-            return false;
-        }
-    }
-
-    file.close();
-
-    return true;
 }

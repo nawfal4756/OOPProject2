@@ -4,3 +4,9 @@
 
 - Muhammad Nawfal Mehboob (20K-1692)
 - Fiza (20K-0396)
+
+### Login Details
+
+#### Customer Login
+
+#### Employee Login

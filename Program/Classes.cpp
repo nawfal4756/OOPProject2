@@ -264,7 +264,9 @@ class Cow : protected LivingThing {
         int add();
         int searchID(const int id);
         int feedCow();
-        int updateProductionLog();        
+        int updateProductionLog();
+        friend int updateCowData(const Cow &obj);
+        friend bool verifyCowID(const int id);
 };
 
 class Person : public LivingThing {
@@ -317,7 +319,8 @@ class Customer : protected Person {
         friend bool checkCustomerEmail(const string email);
         friend bool checkCustomerUsername(const string username);
         friend bool checkCustomerContactNumber(const unsigned long int contactNumber);
-        
+        friend int updateCustomerData(const Customer &obj);
+        friend bool verifyCustomerID(const int id);
 };
 
 class Employee : protected Person {
@@ -344,6 +347,8 @@ class Employee : protected Person {
         friend bool checkEmployeeUsername(const string username);
         friend bool checkEmployeeContactNumber(const unsigned long int contactNumber);
         friend int employeeInterface();
+        friend int updateEmployeeData(const Employee &obj);
+        friend bool verifyEmployeeID(const int id);
 };
 
 class CreditCard : protected Id
@@ -366,6 +371,7 @@ class CreditCard : protected Id
     int searchCardNumber(const unsigned long int cardNumber);
     bool verifyCard(const Date expiry, const int cvc);
     int customerInputInfo();
+    friend bool verifyCreditCardID(const int id);
 };
 
 class Expense : protected Id {
@@ -388,6 +394,8 @@ class Expense : protected Id {
         int searchID(const int id);
         void calculation();
         friend int gatherAccountsData(AccountsReport &obj);
+        friend int updateExpenseData(const Expense &obj);
+        friend bool verifyExpenseID(const int id);
 };
 
 class Feed : protected Id {
@@ -407,6 +415,8 @@ class Feed : protected Id {
         bool modifyInfo();
         int add();
         int searchID(const int id);
+        friend int updateFeedData(const Feed &obj);
+        friend bool verifyFeedID(const int id);
 };
 
 class Invoice : protected Id {
@@ -442,6 +452,8 @@ class Invoice : protected Id {
         friend int gatherCustomerData(CustomerReport &obj, const int customerID);
         friend int gatherProductData(ProductReport &obj, const int productID);
         friend int gatherAccountsData(AccountsReport &obj);
+        friend int updateInvoiceData(const Invoice &obj);
+        friend bool verifyInvoiceID(const int id);
 };
 
 class Parcel : protected Id
@@ -463,6 +475,8 @@ class Parcel : protected Id
         int searchCustomerID(const int customerID);
         void displayParcel();
         friend int customerNotification(const int id);
+        friend int updateParcelData(const Parcel &obj);
+        friend bool verifyParcelID(const int id);
 };
 
 class Product : protected Id {
@@ -492,10 +506,10 @@ class Product : protected Id {
         friend int productNotification();
         friend float purchaseItems(const int customerID);
         friend int gatherProductData(ProductReport &obj, const int productID);
+        friend int updateProductData(const Product &obj);
+        friend bool verifyProductID(const int id);
 };
 
-template<class T>
-int addData(const T &obj, const string FileLoc, const int indicator);
 bool contactNumberVerification(unsigned long int number);
 int customerInterface();
 bool dateVerification (const int day, const int month, const int year, const char type);
@@ -505,10 +519,6 @@ bool emailAddressVerification(const std::string email);
 int fileTimeUpdate(const int indicator);
 int numberOfRecords(std::fstream& ptr, int classSize);
 bool passwordVerification(const std::string pass);
-template<class T>
-int updateData(T &obj, const string FileLoc, const int indicator);
-template<class T>
-bool verifyID(const T &obj, const string FileLoc, const int id);
 
 Report :: Report() {
     lastUpdatedDate.date = localTimeNow->tm_mday;
@@ -1273,6 +1283,74 @@ void LivingThing :: displayInfo() {
     cout << "Date of Birth: " << dateOfBirth.date << "/" << dateOfBirth.month << "/" << dateOfBirth.year << endl;
 }
 
+int updateCowData(const Cow &obj) {
+    fstream file;
+    Cow object;
+    int location, res;
+
+    res = fileTimeUpdate(0);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(CowFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Cow));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(CowFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Cow);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Cow));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyCowID(const int id) {
+    Cow object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(CowFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Cow));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Cow));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Cow :: Cow() {
     weight = 0.0;
     fill_n(breed, 30, '\0');
@@ -1291,7 +1369,7 @@ int Cow :: getID() {
 void Cow :: inputInfo() {
     do {
         assignID();
-    } while (!verifyID(this, CowFileLoc, id));
+    } while (!verifyCowID(id));
 
     int response;
     string tempString;
@@ -1415,8 +1493,32 @@ bool Cow :: modifyInfo() {
         
 int Cow :: add() {
     int res;
-    res = addData(this, CowFileLoc, 0);
-    return res;
+    fstream file; 
+
+    res = fileTimeUpdate(0);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(CowFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(CowFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(CowFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Cow));
+    file.close();
+    return 1;
 }
 
 int Cow :: searchID(const int id) {
@@ -1832,6 +1934,74 @@ bool Person :: verifyPassword(const string customerPasword) {
     }
 }
 
+int updateInvoiceData(const Invoice &obj) {
+    fstream file;
+    Invoice object;
+    int location, res;
+
+    res = fileTimeUpdate(6);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(InvoiceFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Invoice));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(InvoiceFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Invoice);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Invoice));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyInvoiceID(const int id) {
+    Invoice object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(InvoiceFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Invoice));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Invoice));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Invoice :: Invoice() {
     int counter;
 
@@ -1932,13 +2102,36 @@ bool Invoice :: modifyInfo() {
 
 int Invoice :: add() {
     int res;
+    fstream file;
 
     do {
         assignID();
-    } while (verifyID(this, InvoiceFileLoc, id));
+    } while (verifyInvoiceID(id));    
 
-    res = addData(this, InvoiceFileLoc, 6);
-    return res;
+    res = fileTimeUpdate(6);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(InvoiceFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(InvoiceFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(InvoiceFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Invoice));
+    file.close();
+    return 1;
 }
 
 int Invoice :: searchID(const int id) {
@@ -2044,6 +2237,74 @@ void Invoice :: payUpdate(const float amount) {
     amountToBePaid = total - amountPaid;
 }
 
+int updateCustomerData(const Customer &obj) {
+    fstream file;
+    Customer object;
+    int location, res;
+
+    res = fileTimeUpdate(2);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(CustomerFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Customer));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(CustomerFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Customer);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Customer));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyCustomerID(const int id) {
+    Customer object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(CustomerFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Customer));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Customer));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Customer :: Customer() {
     totalPayable = 0.0;
     customerType = 'u';
@@ -2065,7 +2326,7 @@ void Customer :: inputInfo() {
 
     do {
         assignID();
-    } while (!verifyID(this, CustomerFileLoc, id));
+    } while (!verifyCustomerID(id));
 
     cout << "Enter customer type" << endl;
     cout << "Press R for retail and B for business type of customer: ";
@@ -2113,9 +2374,33 @@ bool Customer :: modifyInfo() {
 }
 
 int Customer :: add() {
+    fstream file;
     int res;
-    res = addData(this, CustomerFileLoc, 2);
-    return res;
+
+    res = fileTimeUpdate(2);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(CustomerFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(CustomerFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(CustomerFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Customer));
+    file.close();
+    return 1;
 }
 
 int Customer :: searchID(const int id) {
@@ -2301,8 +2586,8 @@ int Customer :: payInvoice() {
         return res;
     }
 
-    updateData(invoiceObj, InvoiceFileLoc, 6);
-    updateData(*this, CustomerFileLoc, 2);
+    updateInvoiceData(invoiceObj);
+    updateCustomerData(*this);
     return res;
 }
 
@@ -2373,7 +2658,7 @@ float purchaseItems(const int customerID) {
             if (productObj.quantityAvailable <= 0) {
                 productObj.status = 'N';
             }
-            updateData(productObj, ProductFileLoc, 8);
+            updateProductData(productObj);
             cout << "Item successfully added to cart!" << endl;
             cout << "Press enter to continue...";
             getchar();
@@ -2404,7 +2689,7 @@ float purchaseItems(const int customerID) {
                 cout << "Press enter to continue...";
                 getchar();
 
-                updateData(productObj, ProductFileLoc, 8);
+                updateProductData(productObj);
             }
             else {
                 cout << "No product available at current selection!" << endl;
@@ -2446,7 +2731,7 @@ int Customer :: generateInvoice() {
         return 404;
     }
     updatePayable(res);
-    updateData(*this, CustomerFileLoc, 2);
+    updateCustomerData(*this);
     return res;
 }
 
@@ -2538,6 +2823,100 @@ bool checkCustomerContactNumber(const unsigned long int contactNumber) {
     return true;
 }
 
+bool checkEmployeeContactNumber(const unsigned long int contactNumber) {
+    fstream employeeFile;
+    Employee obj;
+    int counter, fileSize;
+
+    employeeFile.open(EmployeeFileLoc, ios::binary | ios::in);
+
+    if (!employeeFile) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(employeeFile, sizeof(Employee));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        employeeFile.read((char*)&obj, sizeof(Employee));
+
+        if (obj.contactNumber == contactNumber) {
+            employeeFile.close();
+            return false;
+        }
+    }
+
+    employeeFile.close();
+    return true;
+}
+
+int updateEmployeeData(const Employee &obj) {
+    fstream file;
+    Employee object;
+    int location, res;
+
+    res = fileTimeUpdate(3);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(EmployeeFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Employee));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(EmployeeFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Employee);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Employee));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyEmployeeID(const int id) {
+    Employee object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(EmployeeFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Employee));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Employee));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Employee :: Employee() {
     fill_n(accessControl, 7, false);
     salary = 0.0;
@@ -2559,7 +2938,7 @@ void Employee :: inputInfo() {
 
     do {
         assignID();
-    } while (!verifyID(this, EmployeeFileLoc, id));
+    } while (!verifyEmployeeID(id));
 
     Person :: inputInfo();
 
@@ -3006,9 +3385,33 @@ bool Employee :: modifyInfo() {
 }
 
 int Employee :: add() {
+    fstream file;
     int res;
-    res = addData(this, EmployeeFileLoc, 3);
-    return res;
+
+    res = fileTimeUpdate(3);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(EmployeeFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(EmployeeFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(EmployeeFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Employee));
+    file.close();
+    return 1;
 }
 
 int Employee :: searchID(const int id) {
@@ -3041,6 +3444,7 @@ int Employee :: searchUsername(const string username) {
     int counter, fileSize;
     char tempUsername[30];
 
+    fill_n(tempUsername, 30, '\0');
     strcpy(tempUsername, username.c_str());
 
     employeeFile.open(EmployeeFileLoc, ios::binary | ios::in);
@@ -3054,7 +3458,7 @@ int Employee :: searchUsername(const string username) {
     for (counter = 0; counter < fileSize; counter++) {
         employeeFile.read((char*)this, sizeof(Employee));
 
-        if (strcmp(this->username, tempUsername) == 0) {
+        if (strcmp(this->username, tempUsername) == 0) {            
             employeeFile.close();
             return 1;
         }
@@ -3201,29 +3605,29 @@ bool checkEmployeeUsername(const string username) {
     return true;
 }
 
-bool checkEmployeeContactNumber(const unsigned long int contactNumber) {
-    fstream employeeFile;
-    Employee obj;
-    int counter, fileSize;
+bool verifyCreditCardID(const int id) {
+    CreditCard object;
+    fstream file;
+    int fileSize, counter;
 
-    employeeFile.open(EmployeeFileLoc, ios::binary | ios::in);
+    file.open(CreditCardFileLoc, ios::binary | ios::in);
 
-    if (!employeeFile) {
+    if (!file) {
         return true;
     }
 
-    fileSize = numberOfRecords(employeeFile, sizeof(Employee));
+    fileSize = numberOfRecords(file, sizeof(CreditCard));
 
     for (counter = 0; counter < fileSize; counter++) {
-        employeeFile.read((char*)&obj, sizeof(Employee));
+        file.read((char*)&object, sizeof(CreditCard));
 
-        if (obj.contactNumber == contactNumber) {
-            employeeFile.close();
+        if (object.id == id) {
+            file.close();
             return false;
         }
     }
 
-    employeeFile.close();
+    file.close();
     return true;
 }
 
@@ -3258,7 +3662,7 @@ void CreditCard ::inputInfo()
 {
     do {
         assignID();
-    } while (!verifyID(this, CreditCardFileLoc, id));
+    } while (!verifyCreditCardID(id));
 
     int i;
     string tempString;
@@ -3365,11 +3769,35 @@ bool CreditCard :: modifyInfo()
     return false;
 }
 
-int CreditCard ::add()
-{
+int CreditCard :: add()
+{    
+    fstream file;
     int res;
-    res = addData(this, CreditCardFileLoc, 1);
-    return res;
+
+    res = fileTimeUpdate(1);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(CreditCardFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(CreditCardFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(CreditCardFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(CreditCard));
+    file.close();
+    return 1;
 }
 
 int CreditCard ::searchID(const int id)
@@ -3506,6 +3934,74 @@ int CreditCard :: customerInputInfo() {
     }
 }
 
+int updateExpenseData(const Expense &obj) {
+    fstream file;
+    Expense object;
+    int location, res;
+
+    res = fileTimeUpdate(4);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(ExpenseFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Expense));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(ExpenseFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Expense);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Expense));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyExpenseID(const int id) {
+    Expense object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(ExpenseFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Expense));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Expense));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Expense ::Expense()
 {
     fill_n(name, 30, '\0');
@@ -3529,6 +4025,10 @@ int Expense :: getID() {
 void Expense ::inputInfo()
 {
     char choice;
+
+    do {
+        assignID();
+    } while (!verifyExpenseID(id));
 
     string tempString;
     cout << "Enter name of expense: ";
@@ -3814,11 +4314,35 @@ bool Expense ::modifyInfo()
     }
 }
 
-int Expense ::add()
+int Expense :: add()
 {
+    fstream file;
     int res;
-    res = addData(this, ExpenseFileLoc, 0);
-    return res;
+
+    res = fileTimeUpdate(4);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(ExpenseFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(ExpenseFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(ExpenseFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Expense));
+    file.close();
+    return 1;
 }
 
 int Expense ::searchID(const int id)
@@ -3853,6 +4377,74 @@ int Expense ::searchID(const int id)
 void Expense ::calculation()
 {
     totalAmount = subAmount + (subAmount * tax / 100);
+}
+
+int updateFeedData(const Feed &obj) {
+    fstream file;
+    Feed object;
+    int location, res;
+
+    res = fileTimeUpdate(5);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(FeedFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Feed));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(FeedFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Feed);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Feed));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyFeedID(const int id) {
+    Feed object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(FeedFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Feed));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Feed));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
 }
 
 Feed :: Feed() {
@@ -3902,7 +4494,7 @@ int Feed :: getID() {
 void Feed :: inputInfo() {
     do {
         assignID();
-    } while (verifyID(this, FeedFileLoc, id));
+    } while (verifyFeedID(id));
 
     cout << "Enter quantity of feed given to cow: ";
     cin >> quantity;
@@ -3943,9 +4535,33 @@ bool Feed :: modifyInfo() {
 }
 
 int Feed :: add() {
+    fstream file;
     int res;
-    res = addData(this, FeedFileLoc, 5);
-    return res;
+
+    res = fileTimeUpdate(5);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(FeedFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(FeedFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(FeedFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Feed));
+    file.close();
+    return 1;
 }
 
 int Feed :: searchID(const int id) {
@@ -3970,6 +4586,74 @@ int Feed :: searchID(const int id) {
     feedFile.close();
 
     return 0;
+}
+
+int updateParcelData(const Parcel &obj) {
+    fstream file;
+    Parcel object;
+    int location, res;
+
+    res = fileTimeUpdate(7);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(ParcelFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Parcel));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(ParcelFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Parcel);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Parcel));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyParcelID(const int id) {
+    Parcel object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(ParcelFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Parcel));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Parcel));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
 }
 
 Parcel ::Parcel()
@@ -4001,7 +4685,7 @@ void Parcel ::inputInfo()
     {
         assignID();
     } 
-    while (!verifyID(this, ParcelFileLoc, id));
+    while (!verifyParcelID(id));
 
     cout << "Press 1 for paid" << endl;
     cout << "Press 2 for unpaid" << endl;
@@ -4099,11 +4783,35 @@ bool Parcel ::modifyInfo()
     }
 }
 
-int Parcel ::add()
+int Parcel :: add()
 {
+    fstream file;
     int res;
-    res = addData(this, ParcelFileLoc, 7);
-    return res;
+
+    res = fileTimeUpdate(7);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(ParcelFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(ParcelFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(ParcelFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Parcel));
+    file.close();
+    return 1;
 }
 
 int Parcel ::searchID(const int id)
@@ -4208,6 +4916,74 @@ int customerNotification(const int id)
     return 0;
 }
 
+int updateProductData(const Product &obj) {
+    fstream file;
+    Product object;
+    int location, res;
+
+    res = fileTimeUpdate(8);
+    if (res == 404) {
+        return 404;
+    }
+
+    file.open(ProductFileLoc, ios::binary | ios::in);
+    
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&object, sizeof(Product));
+    } while (obj.id != object.id);
+
+    location = file.tellg();    
+
+    file.close();
+
+    file.open(ProductFileLoc, ios::binary | ios::out);
+    
+    if (!file) {
+        return 404;
+    }
+
+    location -= sizeof(Product);
+    file.seekg(0, ios::beg);
+    file.seekg(location, ios::cur);
+    file.seekg(0, ios::cur);    
+
+    file.write((char*)&obj, sizeof(Product));
+
+    file.close();
+
+    return 1;
+}
+
+bool verifyProductID(const int id) {
+    Product object;
+    fstream file;
+    int fileSize, counter;
+
+    file.open(ProductFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return true;
+    }
+
+    fileSize = numberOfRecords(file, sizeof(Product));
+
+    for (counter = 0; counter < fileSize; counter++) {
+        file.read((char*)&object, sizeof(Product));
+
+        if (object.id == id) {
+            file.close();
+            return false;
+        }
+    }
+
+    file.close();
+    return true;
+}
+
 Product ::Product()
 {
     int i;
@@ -4242,7 +5018,7 @@ void Product ::inputInfo()
     do
     {
         assignID();
-    } while (!verifyID(this, ProductFileLoc, id));
+    } while (!verifyProductID(id));
 
     cout << "Enter name of product: ";
     getline(cin, tempString);
@@ -4413,11 +5189,35 @@ bool Product ::modifyInfo()
     }
 }
 
-int Product ::add()
+int Product :: add()
 {
+    fstream file;
     int res;
-    res = addData(this, ProductFileLoc, 8);
-    return res;
+
+    res = fileTimeUpdate(8);
+    if (res != 1) {
+        return res;
+    }
+
+    file.open(ProductFileLoc, ios::binary | ios::app);
+
+    if (!file) {
+        file.open(ProductFileLoc, ios::binary | ios::trunc | ios::out);
+        if (!file) {
+            return 404;
+        }
+        file.close();
+
+        file.open(ProductFileLoc, ios::binary | ios::app);
+        if (!file) {
+            return 404;
+        }
+    }
+
+    file.seekg(0, ios::beg);
+    file.write((char*)this, sizeof(Product));
+    file.close();
+    return 1;
 }
 
 int Product ::searchID(const int id)
@@ -4483,7 +5283,7 @@ int Product ::addProduct(const float QuantityToBeAdded)
     int res;
     
     quantityAvailable += QuantityToBeAdded;
-    res = updateData(*this, ProductFileLoc, 8);
+    res = updateProductData(*this);
     return res;
 }
 
