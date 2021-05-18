@@ -167,12 +167,37 @@ int customerInterface() {
                     cout << endl << endl;
 
                     if (userOption == 1) {
-                        res = customerObj.generateInvoice();
+                        res = customerObj.generateInvoice();                        
                         if (res == 404) {
                             cout << "File operation error!" << endl;
                             cout << "Try again later." << endl;
                             cout << "Press enter to continue...";
                             getchar();                            
+                        }
+                        if (customerObj.customerType == 'R') {
+                            res = customerObj.payInvoice();
+                            if (res == 404) {
+                                cout << "File operation error!" << endl;
+                                cout << "Try again later." << endl;
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
+                            else if (res == -1) {
+                                cout << "No invoice found of this customer!" << endl;
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
+                            else if (res == 0) {
+                                cout << "Payment Information Confirmation Failure!" << endl;
+                                cout << "Payment Unsuccessful!" << endl;
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
+                            else if (res == 1) {
+                                cout << "Payment Successful!" << endl;                                
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
                         }
                     }
                     else if (userOption == 2) {
@@ -2239,33 +2264,68 @@ int employeeInterface() {
                             }
                         }
                         else {
-                        cout << "You do not have access to perform this task!" << endl;
-                        cout << "Press enter to continue..." << endl;
-                        getchar(); 
+                            cout << "You do not have access to perform this task!" << endl;
+                            cout << "Press enter to continue..." << endl;
+                            getchar();
                         }
                     }
                     else if (userOption == 17) {
                         if (employeeObj.accessControl[5]) {
-                            cout << "Enter product ID: ";
-                            cin >> tempInt;
+                            cout << "Enter 1 to search by product ID" << endl;
+                            cout << "Enter 2 to search by product name" << endl;
+                            cout << "Enter 3 to go back" << endl;
+                            cout << "Enter desired option: ";
+                            cin >> userOption;
                             fflush(stdin);
-                            res = productObj.searchID(tempInt);
-                            if (res == 404) {
-                                cout << "File operation error!" << endl;
-                                cout << "Try again later." << endl;
-                                cout << "Press enter to continue...";
-                                getchar();
+
+                            if (userOption == 1) {
+                                cout << "Enter product ID: ";
+                                cin >> tempInt;
+                                fflush(stdin);
+                                res = productObj.searchID(tempInt);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No product found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    cout << endl << endl;
+                                    productObj.displayInfo();
+                                    cout << endl << "Press enter to continue...";
+                                    getchar();
+                                }
                             }
-                            else if (res == 0) {
-                                cout << "No product found with this ID!" << endl;
-                                cout << "Press enter to continue..." << endl;
-                                getchar();
+                            else if (userOption == 2) {
+                                cout << "Enter product name: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = productObj.searchName(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No product found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    cout << endl << endl;
+                                    productObj.displayInfo();
+                                    cout << endl << "Press enter to continue...";
+                                    getchar();
+                                }
                             }
-                            else if (res == 1) {
-                                cout << endl << endl;
-                                productObj.displayInfo();
-                                cout << endl << "Press enter to continue...";
-                                getchar();
+                            else if (userOption == 3) {
+
                             }
                         }
                         else {
