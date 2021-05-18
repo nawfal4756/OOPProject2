@@ -2328,6 +2328,7 @@ void Customer :: inputInfo() {
         assignID();
     } while (!verifyCustomerID(id));
 
+    Person::inputInfo();
     cout << "Enter customer type" << endl;
     cout << "Press R for retail and B for business type of customer: ";
     cin >> customerType;
