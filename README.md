@@ -3,4 +3,4 @@
 ## Group Members
 
 - Muhammad Nawfal Mehboob (20K-1692)
-- Fiza Arbani (20K-0396)
+- Fiza (20K-0396)
