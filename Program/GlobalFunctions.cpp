@@ -179,30 +179,31 @@ int customerInterface() {
                         }
                         else if (res == 1) {
                             if (customerObj.customerType == 'R') {
-                            res = customerObj.payInvoice();
-                            if (res == 404) {
-                                cout << "File operation error!" << endl;
-                                cout << "Try again later." << endl;
-                                cout << "Press enter to continue...";
-                                getchar();
-                            }
-                            else if (res == -1) {
-                                cout << "No invoice found of this customer!" << endl;
-                                cout << "Press enter to continue...";
-                                getchar();
-                            }
-                            else if (res == 0) {
-                                cout << "Payment Information Confirmation Failure!" << endl;
-                                cout << "Payment Unsuccessful!" << endl;
-                                cout << "Press enter to continue...";
-                                getchar();
-                            }
-                            else if (res == 1) {
-                                cout << "Payment Successful!" << endl;                                
-                                cout << "Press enter to continue...";
-                                getchar();
+                                res = customerObj.payInvoice();
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == -1) {
+                                    cout << "No invoice found of this customer!" << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "Payment Information Confirmation Failure!" << endl;
+                                    cout << "Payment Unsuccessful!" << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    cout << "Payment Successful!" << endl;                                
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }                        
                             }                        
-                        }                        
+                        }
                     }
                     else if (userOption == 2) {
                         res = customerObj.payInvoice();

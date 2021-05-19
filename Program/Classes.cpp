@@ -2670,59 +2670,59 @@ float purchaseItems(const int customerID) {
                 cout << "Press enter to continue...";
                 getchar();
             }
-            else if (userOption == 2) {
-                for (counter = 0; counter < 10; counter++) {
-                    if (invoiceObj.productsList[counter].productID != 0) {
-                        cout << counter + 1 << " - " << invoiceObj.productsList[counter].productName << " - " << invoiceObj.productsList[counter].quantity << " - $" << fixed << setprecision(2) << invoiceObj.productsList[counter].price << endl;
-                    }
-                }
-                cout << endl << "Enter serial number of product you want to delete from cart: ";
-                cin >> selection;
-                fflush(stdin);
-                selection--;
-
-                if (invoiceObj.productsList[selection].productID != 0) {
-                    productObj.searchID(invoiceObj.productsList[selection].productID);
-                    productObj.quantityAvailable += invoiceObj.productsList[selection].quantity;
-                    productObj.quantitySold -= invoiceObj.productsList[selection].quantity;
-
-                    invoiceObj.productsList[selection].productID = 0;
-                    fill_n(invoiceObj.productsList[selection].productName, 30, '\0');
-                    invoiceObj.productsList[selection].quantity = 0.0;
-                    invoiceObj.productsList[selection].unitPrice = 0.0;
-                    invoiceObj.productsList[selection].price = 0.0;
-
-                    cout << "Item successfully deleted from cart!" << endl;
-                    cout << "Press enter to continue...";
-                    getchar();                
-                }
-                else {
-                    cout << "No product available at current selection!" << endl;
-                    cout << "Press enter to continue...";
-                    getchar();
+        }
+        else if (userOption == 2) {
+            for (counter = 0; counter < 10; counter++) {
+                if (invoiceObj.productsList[counter].productID != 0) {
+                    cout << counter + 1 << " - " << invoiceObj.productsList[counter].productName << " - " << invoiceObj.productsList[counter].quantity << " - $" << fixed << setprecision(2) << invoiceObj.productsList[counter].price << endl;
                 }
             }
-            else if (userOption == 3) {            
-                for (counter = 0; counter < 10; counter++) {
-                    for (counter2 = 1; counter2 < 10; counter2++) {
-                        if (invoiceObj.productsList[counter].productID == 0 && invoiceObj.productsList[counter2].productID != 0) {
-                            temp = invoiceObj.productsList[counter];
-                            invoiceObj.productsList[counter] = invoiceObj.productsList[counter2];
-                            invoiceObj.productsList[counter2] = temp;
-                        }
-                    }
-                }            
-                res = updateProductData(productObj);
-                if (res == 404) {
-                    return -1;
-                }
-                res = invoiceObj.add();
-                if (res == 404) {
-                    return -1;
-                }
-                return invoiceObj.total;        
+            cout << endl << "Enter serial number of product you want to delete from cart: ";
+            cin >> selection;
+            fflush(stdin);
+            selection--;
+
+            if (invoiceObj.productsList[selection].productID != 0) {
+                productObj.searchID(invoiceObj.productsList[selection].productID);
+                productObj.quantityAvailable += invoiceObj.productsList[selection].quantity;
+                productObj.quantitySold -= invoiceObj.productsList[selection].quantity;
+
+                invoiceObj.productsList[selection].productID = 0;
+                fill_n(invoiceObj.productsList[selection].productName, 30, '\0');
+                invoiceObj.productsList[selection].quantity = 0.0;
+                invoiceObj.productsList[selection].unitPrice = 0.0;
+                invoiceObj.productsList[selection].price = 0.0;
+
+                cout << "Item successfully deleted from cart!" << endl;
+                cout << "Press enter to continue...";
+                getchar();                
             }
-        }            
+            else {
+                cout << "No product available at current selection!" << endl;
+                cout << "Press enter to continue...";
+                getchar();
+            }
+        }
+        else if (userOption == 3) {            
+            for (counter = 0; counter < 10; counter++) {
+                for (counter2 = 1; counter2 < 10; counter2++) {
+                    if (invoiceObj.productsList[counter].productID == 0 && invoiceObj.productsList[counter2].productID != 0) {
+                        temp = invoiceObj.productsList[counter];
+                        invoiceObj.productsList[counter] = invoiceObj.productsList[counter2];
+                        invoiceObj.productsList[counter2] = temp;
+                    }
+                }
+            }            
+            res = updateProductData(productObj);
+            if (res == 404) {
+                return -1;
+            }
+            res = invoiceObj.add();
+            if (res == 404) {
+                return -1;
+            }
+            return invoiceObj.total;        
+        }
         else {
             cout << endl << "Incorrect option entered!" << endl;
             cout << "Press enter to continue...";
