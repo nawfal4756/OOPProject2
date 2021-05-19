@@ -2179,6 +2179,7 @@ int Invoice :: searchCustomerID(const int id) {
         if (this->customerID == id) {
             if (!found) {
                 cout << "Invoices List:" << endl;
+                found = true;
             }
             displayInvoice();
         }
@@ -2189,7 +2190,9 @@ int Invoice :: searchCustomerID(const int id) {
     if (found) {
         return 1;
     }
-    return 0;
+    else {
+        return 0;
+    }
 }
 
 int Invoice :: calculations() {
@@ -2558,7 +2561,7 @@ int Customer :: payInvoice() {
     if (res == 404) {
         return 404;
     }
-    while (res == 0 || invoiceObj.getID() != id) {
+    while (res == 0) {
         cout << "Incorrect invoice number entered!" << endl;
         cout << "Enter Invoice ID of invoice you want to pay: ";
         cin >> tempID;
@@ -2651,7 +2654,7 @@ float purchaseItems(const int customerID) {
                 }
 
                 for (counter = 0; counter < 10; counter++) {
-                    if (invoiceObj.productsList[counter].productID != 0) {
+                    if (invoiceObj.productsList[counter].productID == 0) {
                         invoiceObj.productsList[counter].productID = productObj.id;
                         strcpy(invoiceObj.productsList[counter].productName, productObj.name);
                         invoiceObj.productsList[counter].quantity = tempQuantity;
@@ -2661,6 +2664,7 @@ float purchaseItems(const int customerID) {
                     }
                 }
 
+                invoiceObj.calculations();
                 productObj.quantityAvailable -= tempQuantity;
                 productObj.quantitySold += tempQuantity;
                 if (productObj.quantityAvailable <= 0) {
