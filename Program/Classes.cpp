@@ -1516,7 +1516,7 @@ int Cow :: add() {
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Cow));
     file.close();
     return 1;
@@ -2107,7 +2107,7 @@ int Invoice :: add() {
 
     do {
         assignID();
-    } while (verifyInvoiceID(id));    
+    } while (!verifyInvoiceID(id));    
 
     res = fileTimeUpdate(6);
     if (res != 1) {
@@ -2129,7 +2129,7 @@ int Invoice :: add() {
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Invoice));
     file.close();
     return 1;
@@ -2399,7 +2399,7 @@ int Customer :: add() {
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Customer));
     file.close();
     return 1;
@@ -2612,16 +2612,13 @@ float purchaseItems(const int customerID) {
             if (res == 404) {
                 return -1;
             }
-
-            cout << "Enter product ID to add to cart: ";
-            cin >> tempProductID;
-            fflush(stdin);
-            res = productObj.searchID(tempProductID);
-            if (res == 404) {
-                return -1;
+            else if (res == 0) {
+                cout << "No product available to buy!" << endl;
+                cout << "Press enter to continue...";
+                getchar();
+                return -2;
             }
-            while (res == 0) {
-                cout << "Incorrect product ID entered!" << endl;
+            else if (res == 1) {
                 cout << "Enter product ID to add to cart: ";
                 cin >> tempProductID;
                 fflush(stdin);
@@ -2629,93 +2626,103 @@ float purchaseItems(const int customerID) {
                 if (res == 404) {
                     return -1;
                 }
-            }
-
-            cout << "Enter quantity you want to buy: ";
-            cin >> tempQuantity;
-            fflush(stdin);
-            while (tempQuantity <= 0 && tempQuantity > productObj.quantityAvailable) {
-                cout << "Amount entered cannot be purchased!" << endl;
-                if (tempQuantity > productObj.quantityAvailable) {
-                    cout << "Not enough quantity available!" << endl;
+                while (res == 0) {
+                    cout << "Incorrect product ID entered!" << endl;
+                    cout << "Enter product ID to add to cart: ";
+                    cin >> tempProductID;
+                    fflush(stdin);
+                    res = productObj.searchID(tempProductID);
+                    if (res == 404) {
+                        return -1;
+                    }
                 }
+
                 cout << "Enter quantity you want to buy: ";
                 cin >> tempQuantity;
                 fflush(stdin);
-            }
-
-            for (counter = 0; counter < 10; counter++) {
-                if (invoiceObj.productsList[counter].productID != 0) {
-                    invoiceObj.productsList[counter].productID = productObj.id;
-                    strcpy(invoiceObj.productsList[counter].productName, productObj.name);
-                    invoiceObj.productsList[counter].quantity = tempQuantity;
-                    invoiceObj.productsList[counter].unitPrice = productObj.price;
-                    invoiceObj.productsList[counter].price = invoiceObj.productsList[counter].quantity * invoiceObj.productsList[counter].unitPrice;
-                    counter = 11;
+                while (tempQuantity <= 0 && tempQuantity > productObj.quantityAvailable) {
+                    cout << "Amount entered cannot be purchased!" << endl;
+                    if (tempQuantity > productObj.quantityAvailable) {
+                        cout << "Not enough quantity available!" << endl;
+                    }
+                    cout << "Enter quantity you want to buy: ";
+                    cin >> tempQuantity;
+                    fflush(stdin);
                 }
-            }
 
-            productObj.quantityAvailable -= tempQuantity;
-            productObj.quantitySold += tempQuantity;
-            if (productObj.quantityAvailable <= 0) {
-                productObj.status = 'N';
-            }
-            updateProductData(productObj);
-            cout << "Item successfully added to cart!" << endl;
-            cout << "Press enter to continue...";
-            getchar();
-        }
-        else if (userOption == 2) {
-            for (counter = 0; counter < 10; counter++) {
-                if (invoiceObj.productsList[counter].productID != 0) {
-                    cout << counter + 1 << " - " << invoiceObj.productsList[counter].productName << " - " << invoiceObj.productsList[counter].quantity << " - $" << fixed << setprecision(2) << invoiceObj.productsList[counter].price << endl;
-                }
-            }
-            cout << endl << "Enter serial number of product you want to delete from cart: ";
-            cin >> selection;
-            fflush(stdin);
-            selection--;
-
-            if (invoiceObj.productsList[selection].productID != 0) {
-                productObj.searchID(invoiceObj.productsList[selection].productID);
-                productObj.quantityAvailable += invoiceObj.productsList[selection].quantity;
-                productObj.quantitySold -= invoiceObj.productsList[selection].quantity;
-
-                invoiceObj.productsList[selection].productID = 0;
-                fill_n(invoiceObj.productsList[selection].productName, 30, '\0');
-                invoiceObj.productsList[selection].quantity = 0.0;
-                invoiceObj.productsList[selection].unitPrice = 0.0;
-                invoiceObj.productsList[selection].price = 0.0;
-
-                cout << "Item successfully deleted from cart!" << endl;
-                cout << "Press enter to continue...";
-                getchar();
-
-                updateProductData(productObj);
-            }
-            else {
-                cout << "No product available at current selection!" << endl;
-                cout << "Press enter to continue...";
-                getchar();
-            }
-        }
-        else if (userOption == 3) {
-            for (counter = 0; counter < 10; counter++) {
-                for (counter2 = 1; counter2 < 10; counter2++) {
-                    if (invoiceObj.productsList[counter].productID == 0 && invoiceObj.productsList[counter2].productID != 0) {
-                        temp = invoiceObj.productsList[counter];
-                        invoiceObj.productsList[counter] = invoiceObj.productsList[counter2];
-                        invoiceObj.productsList[counter2] = temp;
+                for (counter = 0; counter < 10; counter++) {
+                    if (invoiceObj.productsList[counter].productID != 0) {
+                        invoiceObj.productsList[counter].productID = productObj.id;
+                        strcpy(invoiceObj.productsList[counter].productName, productObj.name);
+                        invoiceObj.productsList[counter].quantity = tempQuantity;
+                        invoiceObj.productsList[counter].unitPrice = productObj.price;
+                        invoiceObj.productsList[counter].price = invoiceObj.productsList[counter].quantity * invoiceObj.productsList[counter].unitPrice;
+                        counter = 11;
                     }
                 }
-            }
 
-            res = invoiceObj.add();
-            if (res == 404) {
-                return -1;
+                productObj.quantityAvailable -= tempQuantity;
+                productObj.quantitySold += tempQuantity;
+                if (productObj.quantityAvailable <= 0) {
+                    productObj.status = 'N';
+                }            
+                cout << "Item successfully added to cart!" << endl;
+                cout << "Press enter to continue...";
+                getchar();
             }
-            return invoiceObj.total;
-        }
+            else if (userOption == 2) {
+                for (counter = 0; counter < 10; counter++) {
+                    if (invoiceObj.productsList[counter].productID != 0) {
+                        cout << counter + 1 << " - " << invoiceObj.productsList[counter].productName << " - " << invoiceObj.productsList[counter].quantity << " - $" << fixed << setprecision(2) << invoiceObj.productsList[counter].price << endl;
+                    }
+                }
+                cout << endl << "Enter serial number of product you want to delete from cart: ";
+                cin >> selection;
+                fflush(stdin);
+                selection--;
+
+                if (invoiceObj.productsList[selection].productID != 0) {
+                    productObj.searchID(invoiceObj.productsList[selection].productID);
+                    productObj.quantityAvailable += invoiceObj.productsList[selection].quantity;
+                    productObj.quantitySold -= invoiceObj.productsList[selection].quantity;
+
+                    invoiceObj.productsList[selection].productID = 0;
+                    fill_n(invoiceObj.productsList[selection].productName, 30, '\0');
+                    invoiceObj.productsList[selection].quantity = 0.0;
+                    invoiceObj.productsList[selection].unitPrice = 0.0;
+                    invoiceObj.productsList[selection].price = 0.0;
+
+                    cout << "Item successfully deleted from cart!" << endl;
+                    cout << "Press enter to continue...";
+                    getchar();                
+                }
+                else {
+                    cout << "No product available at current selection!" << endl;
+                    cout << "Press enter to continue...";
+                    getchar();
+                }
+            }
+            else if (userOption == 3) {            
+                for (counter = 0; counter < 10; counter++) {
+                    for (counter2 = 1; counter2 < 10; counter2++) {
+                        if (invoiceObj.productsList[counter].productID == 0 && invoiceObj.productsList[counter2].productID != 0) {
+                            temp = invoiceObj.productsList[counter];
+                            invoiceObj.productsList[counter] = invoiceObj.productsList[counter2];
+                            invoiceObj.productsList[counter2] = temp;
+                        }
+                    }
+                }            
+                res = updateProductData(productObj);
+                if (res == 404) {
+                    return -1;
+                }
+                res = invoiceObj.add();
+                if (res == 404) {
+                    return -1;
+                }
+                return invoiceObj.total;        
+            }
+        }            
         else {
             cout << endl << "Incorrect option entered!" << endl;
             cout << "Press enter to continue...";
@@ -2728,13 +2735,23 @@ float purchaseItems(const int customerID) {
 
 int Customer :: generateInvoice() {    
     float res;
+    int res2;
     res = purchaseItems(id);
     if (res == -1) {
         return 404;
     }
-    updatePayable(res);
-    updateCustomerData(*this);
-    return res;
+    else if (res == -2) {
+        return 0;
+    }
+    else {
+        updatePayable(res);
+        res2 = updateCustomerData(*this);
+        if (res2 == 404) {
+            return 404;
+        }
+        
+        return 1;
+    }    
 }
 
 void Customer :: updatePayable(const float amount) {
@@ -3410,7 +3427,7 @@ int Employee :: add() {
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Employee));
     file.close();
     return 1;
@@ -3796,7 +3813,7 @@ int CreditCard :: add()
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(CreditCard));
     file.close();
     return 1;
@@ -4341,7 +4358,7 @@ int Expense :: add()
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Expense));
     file.close();
     return 1;
@@ -4560,7 +4577,7 @@ int Feed :: add() {
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Feed));
     file.close();
     return 1;
@@ -4810,7 +4827,7 @@ int Parcel :: add()
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Parcel));
     file.close();
     return 1;
@@ -5216,7 +5233,7 @@ int Product :: add()
         }
     }
 
-    file.seekg(0, ios::beg);
+    file.seekg(0, ios::end);
     file.write((char*)this, sizeof(Product));
     file.close();
     return 1;
@@ -5330,7 +5347,7 @@ int Product :: updateProductionLog(const float quantity) {
 }
 
 void Product :: displayProduct() {
-    cout << id << " - " << name << " - $" << fixed << setprecision(2) << price <<  fixed << setprecision(2) << quantityAvailable << endl;
+    cout << id << " - " << name << " - $" << fixed << setprecision(2) << price << " - " << fixed << setprecision(2) << quantityAvailable << endl;
 }
 
 int Product :: displayProductList() {
@@ -5347,16 +5364,23 @@ int Product :: displayProductList() {
     fileSize = numberOfRecords(file, sizeof(Product));
 
     for (counter = 0; counter < fileSize; counter++) {
-        file.read((char*)this, sizeof(Product));
-        if (!header) {
-            cout << "ProductList: " << endl;
-            header = true;
+        file.read((char*)this, sizeof(Product));        
+        if (status == 'A') {
+            if (!header) {
+                cout << "ProductList: " << endl;
+                header = true;
+            }
+            displayProduct();
         }
-        displayProduct();
     }
 
     file.close();
-    return 1;
+    if (header) {
+        return 1;
+    }
+    else {
+        return 0;
+    }    
 }
 
 int productNotification()

@@ -174,7 +174,11 @@ int customerInterface() {
                             cout << "Press enter to continue...";
                             getchar();                            
                         }
-                        if (customerObj.customerType == 'R') {
+                        else if (res == 0) {
+
+                        }
+                        else if (res == 1) {
+                            if (customerObj.customerType == 'R') {
                             res = customerObj.payInvoice();
                             if (res == 404) {
                                 cout << "File operation error!" << endl;
@@ -197,8 +201,8 @@ int customerInterface() {
                                 cout << "Payment Successful!" << endl;                                
                                 cout << "Press enter to continue...";
                                 getchar();
-                            }
-                        }
+                            }                        
+                        }                        
                     }
                     else if (userOption == 2) {
                         res = customerObj.payInvoice();
