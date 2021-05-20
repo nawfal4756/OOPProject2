@@ -18,3 +18,12 @@
 2. username: Safiya - password: Saf@1998 (Customer Access)
 3. username: WajidKhan - password: Waj@1196 (Full Access)
 4. username: faraz - password: Far@1996 (Report and Invoice Access)
+
+### Credit Card
+
+1. - Card Number: 4902880012345678
+
+- Date of Issue: 1/2021
+- Date of Expiry: 2/2022
+- Card Holder Name: M. Nawfal Mehboob
+- CVC: 123

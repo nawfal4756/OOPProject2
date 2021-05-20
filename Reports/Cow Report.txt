@@ -1,0 +1,2 @@
+Cow ID - Production Date - Production Time - Quantity Produced
+3624 - 20/5/2021 - 23:51:27 - 50

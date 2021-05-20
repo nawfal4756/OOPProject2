@@ -1,0 +1,2 @@
+Invoice ID - Invoice Date - Invoice Time - Amount - AmountToBePaid
+3406 - 20/5/2021 - 20:12:29 - 440 - 0

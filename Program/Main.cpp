@@ -14,6 +14,7 @@ int main() {
         cout << "Enter desired option: ";
         cin >> userOption;
         fflush(stdin);
+        cout << endl << endl;
 
         if (userOption == 1) {
             res = customerInterface();

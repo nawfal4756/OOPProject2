@@ -115,15 +115,15 @@ time_t now = time(0);
 tm *localTimeNow = localtime(&now);
 
 string AccountsReportLoc = "../Files/AccountsReportData.txt";
-string AccountsReportFileLoc = "../Files/Accounts Report.txt";
+string AccountsReportFileLoc = "../Reports/Accounts Report.txt";
 string CowFileLoc = "../Files/CowData.txt";
 string CowQuantityFileLoc = "../Files/CowQuantityData.txt";
 string CowReportLoc = "../Files/CowReportData.txt";
-string CowReportFileLoc = "../Files/Cow Report.txt";
+string CowReportFileLoc = "../Reports/Cow Report.txt";
 string CreditCardFileLoc = "../Files/CreditCardData.txt";
 string CustomerFileLoc = "../Files/CustomerData.txt";
 string CustomerReportLoc = "../Files/CustomerReportData.txt";
-string CustomerReportFileLoc = "../Files/Customer Report.txt";
+string CustomerReportFileLoc = "../Reports/Customer Report.txt";
 string EmployeeFileLoc = "../Files/EmployeeData.txt";
 string ExpenseFileLoc = "../Files/ExpenseData.txt";
 string FeedFileLoc = "../Files/FeedData.txt";
@@ -132,7 +132,7 @@ string ParcelFileLoc = "../Files/ParcelData.txt";
 string ProductFileLoc = "../Files/ProductData.txt";
 string ProductQuantityFileLoc = "../Files/ProductQuantityData.txt";
 string ProductReportLoc = "../Files/ProductReportData.txt";
-string ProductReportFileLoc = "../Files/Product Report.txt";
+string ProductReportFileLoc = "../Reports/Product Report.txt";
 string FileTimeLoc = "../Files/FilesData.txt";
 
 class Report {
@@ -472,9 +472,9 @@ class Parcel : protected Id
         void displayInfo();
         bool modifyInfo();
         int add();
-        int searchID(const int id);
+        int searchID(const int id);        
         int searchCustomerID(const int customerID);
-        void displayParcel();
+        void displayParcel();        
         friend int customerNotification(const int id);
         friend int updateParcelData(const Parcel &obj);
         friend bool verifyParcelID(const int id);
@@ -512,6 +512,7 @@ class Product : protected Id {
 };
 
 bool contactNumberVerification(unsigned long int number);
+int cowDetails();
 int customerInterface();
 bool dateVerification (const int day, const int month, const int year, const char type);
 bool dobVerification (const int day, const int month, const int year, const char condition);
@@ -823,7 +824,7 @@ int CowReport :: gatherData() {
     ProductionLog tempData;
     
     res = cowObj.searchID(cowID);
-    if (res != 1) {
+    if (res != 1) {        
         return res;
     }
 
@@ -2554,6 +2555,7 @@ int Customer :: payInvoice() {
     else if (res == 0) {
         return -1;
     }
+    cin.clear();
     cout << "Enter Invoice ID of invoice you want to pay: ";
     cin >> tempID;
     fflush(stdin);
@@ -2583,7 +2585,7 @@ int Customer :: payInvoice() {
     }
 
     res = creditCardObj.customerInputInfo();
-    if (res == 1) {        
+    if (res == 1) {
         invoiceObj.payUpdate(amount);
         totalPayable -= amount;
     }
@@ -3683,28 +3685,26 @@ int CreditCard :: getID() {
 
 void CreditCard ::inputInfo()
 {
+    string tempString;
+    
+    dateOfIssue.date = 0;
     do {
         assignID();
-    } while (!verifyCreditCardID(id));
-
-    int i;
-    string tempString;
-
-    assignID();
+    } while (!verifyCreditCardID(id));    
 
     cout << "Enter the card number: ";
     cin >> cardNumber;
     fflush(stdin);
+    cin.clear();
 
-    while (cardNumber < 1000000000000000 || cardNumber > 9999999999999999)
+    while (cardNumber < 1000000000000000 && cardNumber > 9999999999999999)
     {
         cout << "Incorrect number!" << endl;
         cout << "Enter the card number: ";
         cin >> cardNumber;
         fflush(stdin);
+        cin.clear();
     }
-
-    dateOfIssue.date = 0;
 
     cout << "Enter the month of issue date: ";
     cin >> dateOfIssue.month;
@@ -3716,6 +3716,7 @@ void CreditCard ::inputInfo()
 
     while (!dateVerification(dateOfIssue.date, dateOfIssue.month, dateOfIssue.year, 'I'))
     {
+        cout << "Incorrect date entered!" << endl;
         cout << "Enter the month of issue date: ";
         cin >> dateOfIssue.month;
         fflush(stdin);
@@ -3737,6 +3738,7 @@ void CreditCard ::inputInfo()
 
     while (!dateVerification(expiryDate.date, expiryDate.month, expiryDate.year, 'E'))
     {
+        cout << "Incorrect date entered!" << endl;
         cout << "Enter the month of expiry date: ";
         cin >> expiryDate.month;
         fflush(stdin);
@@ -3772,18 +3774,12 @@ void CreditCard ::inputInfo()
 }
 
 void CreditCard ::displayInfo()
-{
-    int i;
-    cout << "ID: " << id << endl;
+{    
+    Id :: displayInfo();
     cout << "Card number: " << cardNumber << endl;
     cout << "Issue date: " << dateOfIssue.date << "/" << dateOfIssue.month << "/" << dateOfIssue.year << endl;
     cout << "Expiry date: " << expiryDate.date << "/" << expiryDate.month << "/" << expiryDate.year << endl;
-    cout << "Crd holder name: ";
-    for (i = 0; i < 30; i++)
-    {
-        cout << cardHolderName[i];
-    }
-    cout << endl;
+    cout << "Card holder name: " << cardHolderName << endl;
     cout << "cvc: " << cvc << endl;
 }
 
@@ -3915,6 +3911,7 @@ int CreditCard :: customerInputInfo() {
     
     expiry.date = 0;
 
+    cin.clear();
     cout << "Enter expiry month: ";
     cin >> expiry.month;
     fflush(stdin);
@@ -3937,6 +3934,7 @@ int CreditCard :: customerInputInfo() {
 
     cout << endl;
 
+    cin.clear();
     cout << "Enter CVC: ";
     cin >> cvcCode;
     fflush(stdin);
@@ -4717,7 +4715,7 @@ void Parcel ::inputInfo()
     cout << "Your choice: ";
     cin >> status;
     fflush(stdin);
-    while (status != '1' && status != '2' && status != '3' && status != '4')
+    while (status != 1 && status != 2 && status != 3 && status != 4)
     {
         cout << "Incorrect choice!" << endl;
         cout << "Enter your choice again: ";
@@ -4780,7 +4778,7 @@ bool Parcel ::modifyInfo()
             cout << "Your choice: ";
             cin >> status;
             fflush(stdin);
-            while (status != '1' && status != '2' && status != '3' && status != '4')
+            while (status != 1 && status != 2 && status != 3 && status != 4)
             {
                 cout << "Incorrect choice!" << endl;
                 cout << "Enter your choice again: ";

@@ -145,6 +145,7 @@ int customerInterface() {
                 cout << "Incorrect username or password!" << endl;
                 cout << "Press enter to continue...";
                 getchar();
+                return 2;
             }
             else if (res == 2) {
                 
@@ -162,6 +163,7 @@ int customerInterface() {
                     cout << "Enter 3 to see parcel status" << endl;
                     cout << "Enter 4 to modify account details" << endl;
                     cout << "Enter 5 to go back" << endl;
+                    cout << "Enter desired option: ";
                     cin >> userOption;
                     fflush(stdin);
                     cout << endl << endl;
@@ -568,6 +570,7 @@ int employeeInterface() {
     Parcel parcelObj;
     Product productObj;
     Expense expenseObj;
+    CreditCard creditCardObj;
     AccountsReport accountsReportObj;
     CowReport* cowReportObj;
     CustomerReport customerReportObj;
@@ -582,6 +585,7 @@ int employeeInterface() {
         cout << "Enter desired option: ";
         cin >> userOption;
         fflush(stdin);
+        cout << endl << endl;
 
         if (userOption == 1) {
             res = employeeObj.login();
@@ -599,6 +603,7 @@ int employeeInterface() {
                 cout << "Incorrect username or password!" << endl;
                 cout << "Press enter to continue...";
                 getchar();
+                return 2;
             }
             else if (res == 1) {
                 system("cls");
@@ -632,29 +637,34 @@ int employeeInterface() {
                     }
                     if (employeeObj.accessControl[4]) {
                         cout << "Enter 13 to generate a parcel" << endl;
-                        cout << "Enter 14 to view parcel details" << endl;
+                        cout << "Enter 14 to modify parcel details" << endl;
+                        cout << "Enter 15 to view parcel details" << endl;
                     }
                     if (employeeObj.accessControl[5]) {
-                        cout << "Enter 15 to add a new product" << endl;
-                        cout << "Enter 16 to modify product details" << endl;
-                        cout << "Enter 17 to see product details" << endl;
+                        cout << "Enter 16 to add a new product" << endl;
+                        cout << "Enter 17 to modify product details" << endl;
+                        cout << "Enter 18 to see product details" << endl;
                     }
                     if (employeeObj.accessControl[6]) {
-                        cout << "Enter 18 to add a new expense" << endl;
-                        cout << "Enter 19 to modify expense details" << endl;
-                        cout << "Enter 20 to see expense details" << endl;
+                        cout << "Enter 19 to add a new expense" << endl;
+                        cout << "Enter 20 to modify expense details" << endl;
+                        cout << "Enter 21 to see expense details" << endl;
                     }
                     if (employeeObj.accessControl[7]) {
-                        cout << "Enter 21 to generate Accounts Report" << endl;
-                        cout << "Enter 22 to generate Cow Report" << endl;
-                        cout << "Enter 23 to generate Customer Report" << endl;
-                        cout << "Enter 24 to generate Product Report" << endl;
+                        cout << "Enter 22 to generate Accounts Report" << endl;
+                        cout << "Enter 23 to generate Cow Report" << endl;
+                        cout << "Enter 24 to generate Customer Report" << endl;
+                        cout << "Enter 25 to generate Product Report" << endl;
                     }
-                    cout << "Enter 25 to modify you own details" << endl;
-                    cout << "Enter 26 to go back" << endl;
+                    if (employeeObj.accessControl[1]) {
+                        cout << "Enter 26 to see all cow details" << endl;    
+                    }
+                    cout << "Enter 27 to modify you own details" << endl;
+                    cout << "Enter 28 to go back" << endl;
                     cout << "Enter desired option: ";
                     cin >> userOption;
                     fflush(stdin);
+                    cout << endl << endl;
 
                     if (userOption == 1) {
                         if (employeeObj.accessControl[0]) {
@@ -1576,7 +1586,7 @@ int employeeInterface() {
                                         getchar();
                                     }
                                     else if (res == 1) {
-                                        cout << "Enter invoice ID to generate parcel: ";
+                                        cout << "Enter invoice ID: ";
                                         cin >> tempInt;
                                         fflush(stdin);
                                         res = invoiceObj.searchID(tempInt);
@@ -1617,7 +1627,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
+                                    cout << "Enter invoice ID: ";
                                     cin >> tempInt;
                                     fflush(stdin);
                                     res = invoiceObj.searchID(tempInt);
@@ -1657,7 +1667,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
+                                    cout << "Enter invoice ID: ";
                                     cin >> tempInt;
                                     fflush(stdin);
                                     res = invoiceObj.searchID(tempInt);
@@ -1697,7 +1707,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
+                                    cout << "Enter invoice ID: ";
                                     cin >> tempInt;
                                     fflush(stdin);
                                     res = invoiceObj.searchID(tempInt);
@@ -1837,10 +1847,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
-                                    cin >> tempInt;
-                                    fflush(stdin);
-                                    res = invoiceObj.searchID(tempInt);
+                                    res = invoiceObj.searchCustomerID(customerObj.getID());
                                     if (res == 404) {
                                         cout << "File operation error!" << endl;                                    
                                         cout << "Try again later." << endl;
@@ -1848,22 +1855,39 @@ int employeeInterface() {
                                         getchar();
                                     }
                                     else if (res == 0) {
-                                        cout << "No invoice found with this ID!" << endl;
+                                        cout << "No invoice found for this customer!" << endl;
                                         cout << "Press enter to continue..." << endl;
                                         getchar();
                                     }
                                     else if (res == 1) {
-                                        res = invoiceObj.generateParcel();
+                                        cout << "Enter invoice ID to generate parcel: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = invoiceObj.searchID(tempInt);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;                                    
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
                                             getchar();
                                         }
-                                        else if (res == 1) {
-                                            cout << "Parcel Successfully Created!" << endl;
+                                        else if (res == 0) {
+                                            cout << "No invoice found with this ID!" << endl;
                                             cout << "Press enter to continue..." << endl;
                                             getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = invoiceObj.generateParcel();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;                                    
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Parcel Successfully Created!" << endl;
+                                                cout << "Press enter to continue..." << endl;
+                                                getchar();
+                                            }
                                         }
                                     }
                                 }
@@ -1885,10 +1909,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
-                                    cin >> tempInt;
-                                    fflush(stdin);
-                                    res = invoiceObj.searchID(tempInt);
+                                    res = invoiceObj.searchCustomerID(customerObj.getID());
                                     if (res == 404) {
                                         cout << "File operation error!" << endl;                                    
                                         cout << "Try again later." << endl;
@@ -1896,22 +1917,39 @@ int employeeInterface() {
                                         getchar();
                                     }
                                     else if (res == 0) {
-                                        cout << "No invoice found with this ID!" << endl;
+                                        cout << "No invoice found for this customer!" << endl;
                                         cout << "Press enter to continue..." << endl;
                                         getchar();
                                     }
                                     else if (res == 1) {
-                                        res = invoiceObj.generateParcel();
+                                        cout << "Enter invoice ID to generate parcel: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = invoiceObj.searchID(tempInt);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;                                    
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
                                             getchar();
                                         }
-                                        else if (res == 1) {
-                                            cout << "Parcel Successfully Created!" << endl;
+                                        else if (res == 0) {
+                                            cout << "No invoice found with this ID!" << endl;
                                             cout << "Press enter to continue..." << endl;
                                             getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = invoiceObj.generateParcel();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;                                    
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Parcel Successfully Created!" << endl;
+                                                cout << "Press enter to continue..." << endl;
+                                                getchar();
+                                            }
                                         }
                                     }
                                 }
@@ -1933,10 +1971,7 @@ int employeeInterface() {
                                     getchar();
                                 }
                                 else if (res == 1) {
-                                    cout << "Enter invoice ID to generate parcel: ";
-                                    cin >> tempInt;
-                                    fflush(stdin);
-                                    res = invoiceObj.searchID(tempInt);
+                                    res = invoiceObj.searchCustomerID(customerObj.getID());
                                     if (res == 404) {
                                         cout << "File operation error!" << endl;                                    
                                         cout << "Try again later." << endl;
@@ -1944,22 +1979,39 @@ int employeeInterface() {
                                         getchar();
                                     }
                                     else if (res == 0) {
-                                        cout << "No invoice found with this ID!" << endl;
+                                        cout << "No invoice found for this customer!" << endl;
                                         cout << "Press enter to continue..." << endl;
                                         getchar();
                                     }
                                     else if (res == 1) {
-                                        res = invoiceObj.generateParcel();
+                                        cout << "Enter invoice ID to generate parcel: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = invoiceObj.searchID(tempInt);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;                                    
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
                                             getchar();
                                         }
-                                        else if (res == 1) {
-                                            cout << "Parcel Successfully Created!" << endl;
+                                        else if (res == 0) {
+                                            cout << "No invoice found with this ID!" << endl;
                                             cout << "Press enter to continue..." << endl;
                                             getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = invoiceObj.generateParcel();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;                                    
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Parcel Successfully Created!" << endl;
+                                                cout << "Press enter to continue..." << endl;
+                                                getchar();
+                                            }
                                         }
                                     }
                                 }
@@ -1975,6 +2027,291 @@ int employeeInterface() {
                         }
                     }
                     else if (userOption == 14) {
+                        if (employeeObj.accessControl[4]) {
+                            cout << "Enter 1 to serach customer by ID" << endl;
+                            cout << "Enter 2 to serach customer by username" << endl;
+                            cout << "Enter 3 to serach customer by email address" << endl;
+                            cout << "Enter 4 to serach customer by contact number" << endl;
+                            cout << "Enter 5 to go back" << endl;
+                            cout << "Enter desired option: ";
+                            cin >> userOption;
+                            fflush(stdin);
+
+                            if (userOption == 1) {
+                                cout << "Enter customer ID: ";
+                                cin >> tempInt;
+                                fflush(stdin);
+                                res = customerObj.searchID(tempInt);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = parcelObj.searchCustomerID(customerObj.getID());
+                                    if (res == 404) {
+                                        cout << "File operation error!" << endl;                                    
+                                        cout << "Try again later." << endl;
+                                        cout << "Press enter to continue...";
+                                        getchar();
+                                    }
+                                    else if (res == 0) {
+                                        cout << "No parcel found for this customer!" << endl;
+                                        cout << "Press enter to continue..." << endl;
+                                        getchar();
+                                    }
+                                    else if (res == 1) {
+                                        cout << "Enter parcel ID to modify its details: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = parcelObj.searchID(tempInt);
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;                                    
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No parcel found with this ID!" << endl;
+                                            cout << "Press enter to continue..." << endl;
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            resBool = parcelObj.modifyInfo();
+                                            if (resBool) {
+                                                res = updateParcelData(parcelObj);
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Parcel Information Not Updated!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Parcel Information Updated Successfully!" << endl;
+                                                    cout << "Press enter to continue..." << endl;
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 2) {
+                                cout << "Enter customer username: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = customerObj.searchUsername(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this username!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = parcelObj.searchCustomerID(customerObj.getID());
+                                    if (res == 404) {
+                                        cout << "File operation error!" << endl;                                    
+                                        cout << "Try again later." << endl;
+                                        cout << "Press enter to continue...";
+                                        getchar();
+                                    }
+                                    else if (res == 0) {
+                                        cout << "No parcel found for this customer!" << endl;
+                                        cout << "Press enter to continue..." << endl;
+                                        getchar();
+                                    }
+                                    else if (res == 1) {
+                                        cout << "Enter parcel ID to modify its details: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = parcelObj.searchID(tempInt);
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;                                    
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No parcel found with this ID!" << endl;
+                                            cout << "Press enter to continue..." << endl;
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            resBool = parcelObj.modifyInfo();
+                                            if (resBool) {
+                                                res = updateParcelData(parcelObj);
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Parcel Information Not Updated!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Parcel Information Updated Successfully!" << endl;
+                                                    cout << "Press enter to continue..." << endl;
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 3) {
+                                cout << "Enter customer email address: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = customerObj.searchEmail(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this email address!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = parcelObj.searchCustomerID(customerObj.getID());
+                                    if (res == 404) {
+                                        cout << "File operation error!" << endl;                                    
+                                        cout << "Try again later." << endl;
+                                        cout << "Press enter to continue...";
+                                        getchar();
+                                    }
+                                    else if (res == 0) {
+                                        cout << "No parcel found for this customer!" << endl;
+                                        cout << "Press enter to continue..." << endl;
+                                        getchar();
+                                    }
+                                    else if (res == 1) {
+                                        cout << "Enter parcel ID to modify its details: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = parcelObj.searchID(tempInt);
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;                                    
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No parcel found with this ID!" << endl;
+                                            cout << "Press enter to continue..." << endl;
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            resBool = parcelObj.modifyInfo();
+                                            if (resBool) {
+                                                res = updateParcelData(parcelObj);
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Parcel Information Not Updated!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Parcel Information Updated Successfully!" << endl;
+                                                    cout << "Press enter to continue..." << endl;
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 4) {
+                                cout << "Enter customer contact number: ";
+                                cin >> tempContact;
+                                fflush(stdin);
+                                res = customerObj.searchConatctNumber(tempContact);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this contact number!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = parcelObj.searchCustomerID(customerObj.getID());
+                                    if (res == 404) {
+                                        cout << "File operation error!" << endl;                                    
+                                        cout << "Try again later." << endl;
+                                        cout << "Press enter to continue...";
+                                        getchar();
+                                    }
+                                    else if (res == 0) {
+                                        cout << "No parcel found for this customer!" << endl;
+                                        cout << "Press enter to continue..." << endl;
+                                        getchar();
+                                    }
+                                    else if (res == 1) {
+                                        cout << "Enter parcel ID to modify its details: ";
+                                        cin >> tempInt;
+                                        fflush(stdin);
+                                        res = parcelObj.searchID(tempInt);
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;                                    
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No parcel found with this ID!" << endl;
+                                            cout << "Press enter to continue..." << endl;
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            resBool = parcelObj.modifyInfo();
+                                            if (resBool) {
+                                                res = updateParcelData(parcelObj);
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Parcel Information Not Updated!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Parcel Information Updated Successfully!" << endl;
+                                                    cout << "Press enter to continue..." << endl;
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 5) {
+
+                            }
+                        }
+                        else {
+                            cout << "You do not have access to perform this task!" << endl;
+                            cout << "Press enter to continue..." << endl;
+                            getchar();
+                        }
+                    }
+                    else if (userOption == 15) {
                         if (employeeObj.accessControl[4]) {
                             cout << "Enter 1 to serach customer by ID" << endl;
                             cout << "Enter 2 to serach customer by username" << endl;
@@ -2211,7 +2548,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 15) {
+                    else if (userOption == 16) {
                         if (employeeObj.accessControl[5]) {
                             productObj.inputInfo();
                             res = productObj.add();
@@ -2232,7 +2569,7 @@ int employeeInterface() {
                         getchar(); 
                         }
                     }
-                    else if (userOption == 16) {
+                    else if (userOption == 17) {
                         if (employeeObj.accessControl[5]) {
                             cout << "Enter product ID: ";
                             cin >> tempInt;
@@ -2274,7 +2611,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 17) {
+                    else if (userOption == 18) {
                         if (employeeObj.accessControl[5]) {
                             cout << "Enter 1 to search by product ID" << endl;
                             cout << "Enter 2 to search by product name" << endl;
@@ -2339,7 +2676,7 @@ int employeeInterface() {
                             getchar(); 
                         }
                     }
-                    else if (userOption == 18) {
+                    else if (userOption == 19) {
                         if (employeeObj.accessControl[6]) {
                             expenseObj.inputInfo();
                             res = expenseObj.add();
@@ -2360,7 +2697,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 19) {
+                    else if (userOption == 20) {
                         if (employeeObj.accessControl[6]) {
                             cout << "Enter expense ID: ";
                             cin >> tempInt;
@@ -2402,7 +2739,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 20) {
+                    else if (userOption == 21) {
                         if (employeeObj.accessControl[6]) {
                             cout << "Enter expense ID: ";
                             cin >> tempInt;
@@ -2432,7 +2769,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 21) {
+                    else if (userOption == 22) {
                         if (employeeObj.accessControl[7]) {
                             res = accountsReportObj.read();
                             if (res == 404) {
@@ -2504,7 +2841,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 22) {
+                    else if (userOption == 23) {
                         if (employeeObj.accessControl[7]) {
                             cout << "Enter cow ID to generate report or -1 to go back: ";
                             cin >> tempInt;
@@ -2515,6 +2852,7 @@ int employeeInterface() {
                                 if (res == 404) {
                                     res = cowReportObj->gatherData();
                                     if (res == 404) {
+                                        cout << "Error 1" << endl;
                                         cout << "File operation error!" << endl;
                                         cout << "Try again later." << endl;
                                         cout << "Press enter to continue...";
@@ -2528,6 +2866,7 @@ int employeeInterface() {
                                     else if (res == 1) {
                                         res = cowReportObj->printReport();
                                         if (res == 404) {
+                                            cout << "Error 2" << endl;
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2544,6 +2883,7 @@ int employeeInterface() {
                                     if (cowReportObj->verifyUpdatedDateTime()) {
                                         res = cowReportObj->printReport();
                                         if (res == 404) {
+                                            cout << "Error 3" << endl;
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2558,6 +2898,7 @@ int employeeInterface() {
                                     else {
                                         res = cowReportObj->gatherData();
                                         if (res == 404) {
+                                            cout << "Error 4" << endl;
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2571,6 +2912,7 @@ int employeeInterface() {
                                         else if (res == 1) {
                                             res = cowReportObj->printReport();
                                             if (res == 404) {
+                                                cout << "Error 5" << endl;
                                                 cout << "File operation error!" << endl;
                                                 cout << "Try again later." << endl;
                                                 cout << "Press enter to continue...";
@@ -2584,7 +2926,9 @@ int employeeInterface() {
                                         }
                                     }
                                 }
-                                delete cowReportObj;
+                                if (cowReportObj) {
+                                    delete cowReportObj;
+                                }
                             }                        
                         }
                         else {
@@ -2593,7 +2937,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 23) {
+                    else if (userOption == 24) {
                         if (employeeObj.accessControl[7]) {
                             cout << "Enter customer ID to generate report or neter -1 to go back: ";
                             cin >> tempInt;
@@ -2680,7 +3024,7 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 24) {
+                    else if (userOption == 25) {
                         if (employeeObj.accessControl[7]) {
                             cout << "Enter product ID to generate report or neter -1 to go back: ";
                             cin >> tempInt;
@@ -2767,7 +3111,29 @@ int employeeInterface() {
                             getchar();
                         }
                     }
-                    else if (userOption == 25) {
+                    else if (userOption == 26) {
+                        if (employeeObj.accessControl[1]) {
+                            cout << endl << endl;
+                            res = cowDetails();
+                            if (res == 404) {
+                                cout << "File operation error!" << endl;
+                                cout << "Try again later." << endl;
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
+                            else if (res == 1) {
+                                cout << "Data display completed!" << endl;
+                                cout << "Press enter to continue...";
+                                getchar();
+                            }
+                        }
+                        else {
+                            cout << "You do not have access to perform this task!" << endl;
+                            cout << "Press enter to continue..." << endl;
+                            getchar();
+                        }
+                    }
+                    else if (userOption == 27) {
                         resBool = employeeObj.modifyInfo();
                         if (resBool) {
                             res = updateEmployeeData(employeeObj);
@@ -2785,7 +3151,7 @@ int employeeInterface() {
                             }
                         }
                     }
-                    else if (userOption == 26) {
+                    else if (userOption == 28) {
                         return 2;
                     }                    
                     else {
@@ -2803,17 +3169,43 @@ int employeeInterface() {
             fflush(stdin);
 
             if (tempString == "FOFF@0396") {
-                employeeObj.inputInfo();
-                res = employeeObj.add();
-                if (res == 404) {
-                    cout << "File Error!" << endl;
-                    cout << "Press enter to continue..." << endl;
-                    getchar();
+                cout << "Enter 1 to generate employee" << endl;
+                cout << "Enter 2 to generate credit card" << endl;
+                cout << "Enter 3 to go back" << endl;
+                cout << "Enter desired option ";
+                cin >> userOption;
+                fflush(stdin);
+
+                if (userOption == 1) {
+                    employeeObj.inputInfo();
+                    res = employeeObj.add();
+                    if (res == 404) {
+                        cout << "File Error!" << endl;
+                        cout << "Press enter to continue..." << endl;
+                        getchar();
+                    }
+                    else if (res == 1) {
+                        cout << "Employee Added!" << endl;
+                        cout << "Press enter to continue..." << endl;
+                        getchar();
+                    }
                 }
-                else if (res == 1) {
-                    cout << "Employee Added!" << endl;
-                    cout << "Press enter to continue..." << endl;
-                    getchar();
+                else if (userOption == 2) {
+                    creditCardObj.inputInfo();
+                    res = creditCardObj.add();
+                    if (res == 404) {
+                        cout << "File Error!" << endl;
+                        cout << "Press enter to continue..." << endl;
+                        getchar();
+                    }
+                    else if (res == 1) {
+                        cout << "Credit Card Added!" << endl;
+                        cout << "Press enter to continue..." << endl;
+                        getchar();
+                    }
+                }
+                else if (userOption == 3) {
+                    
                 }
             }
         }
@@ -2910,4 +3302,23 @@ bool passwordVerification(const std::string pass)
     {
         return true;
     }
+}
+
+int cowDetails() {
+    fstream file;
+    Cow obj;
+    file.open(CowFileLoc, ios::binary | ios::in);
+
+    if (!file) {
+        return 404;
+    }
+
+    do {
+        file.read((char*)&obj, sizeof(Cow));
+        obj.displayInfo();
+        cout << endl << endl;
+    } while (!file.eof());
+
+    file.close();
+    return 1;
 }
