@@ -1427,8 +1427,7 @@ void Cow :: inputInfo() {
 }
 
 void Cow :: displayInfo() {    
-    cout << "Cow Information:" << endl;
-    cout << "ID: " << id << endl;
+    cout << "Cow Information:" << endl;    
     cout << "Weight: " << weight << endl;
     LivingThing :: displayInfo();
     cout << "Breed: " << breed << endl;
