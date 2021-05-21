@@ -3,6 +3,6 @@ Product ID - Production Date - Production Time - Produced Quantity
 2670 - 19/5/2021 - 22:26:39 - 50
 Product sells
 Product ID - Product Name - Product Quantity - Unit Price - Total Price - Sell Date - Sell Time
-2670-Milk-4-110-440 - 20/5/2021 - 20:12:29
-Quantity Available: 90
-Quantity sold: 85
+2670-Milk-1-110-110 - 21/5/2021 - 21:14:3
+Quantity Available: 104
+Quantity sold: 96

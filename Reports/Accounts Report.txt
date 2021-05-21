@@ -1,5 +1,5 @@
 Income details:Income ID - Income Date - Income Time - Income Amount
-3406 - 20/5/2021 - 20:12:29 - 440
+4814 - 21/5/2021 - 21:14:3 - 1100
 Expenses details: Expense ID - Expense Date - Expense Amount - Expense Name - Expense Description
 27233 - 12/4/2021 - 31200 - Electricity Bill - Monthly bill of electricity
-Profit: -30760
+Profit: -30100
