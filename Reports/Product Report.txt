@@ -4,5 +4,5 @@ Product ID - Production Date - Production Time - Produced Quantity
 Product sells
 Product ID - Product Name - Product Quantity - Unit Price - Total Price - Sell Date - Sell Time
 2670-Milk-4-110-440 - 20/5/2021 - 20:12:29
-Quantity Available: 40
+Quantity Available: 90
 Quantity sold: 85

@@ -2851,8 +2851,7 @@ int employeeInterface() {
                                 res = cowReportObj->read();
                                 if (res == 404) {
                                     res = cowReportObj->gatherData();
-                                    if (res == 404) {
-                                        cout << "Error 1" << endl;
+                                    if (res == 404) {                                        
                                         cout << "File operation error!" << endl;
                                         cout << "Try again later." << endl;
                                         cout << "Press enter to continue...";
@@ -2865,8 +2864,7 @@ int employeeInterface() {
                                     }
                                     else if (res == 1) {
                                         res = cowReportObj->printReport();
-                                        if (res == 404) {
-                                            cout << "Error 2" << endl;
+                                        if (res == 404) {                                            
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2882,8 +2880,7 @@ int employeeInterface() {
                                 else if (res == 1) {
                                     if (cowReportObj->verifyUpdatedDateTime()) {
                                         res = cowReportObj->printReport();
-                                        if (res == 404) {
-                                            cout << "Error 3" << endl;
+                                        if (res == 404) {                                            
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2897,8 +2894,7 @@ int employeeInterface() {
                                     }
                                     else {
                                         res = cowReportObj->gatherData();
-                                        if (res == 404) {
-                                            cout << "Error 4" << endl;
+                                        if (res == 404) {                                            
                                             cout << "File operation error!" << endl;
                                             cout << "Try again later." << endl;
                                             cout << "Press enter to continue...";
@@ -2911,8 +2907,7 @@ int employeeInterface() {
                                         }
                                         else if (res == 1) {
                                             res = cowReportObj->printReport();
-                                            if (res == 404) {
-                                                cout << "Error 5" << endl;
+                                            if (res == 404) {                                                
                                                 cout << "File operation error!" << endl;
                                                 cout << "Try again later." << endl;
                                                 cout << "Press enter to continue...";
@@ -2939,55 +2934,34 @@ int employeeInterface() {
                     }
                     else if (userOption == 24) {
                         if (employeeObj.accessControl[7]) {
-                            cout << "Enter customer ID to generate report or neter -1 to go back: ";
-                            cin >> tempInt;
+                            cout << "Enter 1 to serach customer by ID" << endl;
+                            cout << "Enter 2 to serach customer by username" << endl;
+                            cout << "Enter 3 to serach customer by email address" << endl;
+                            cout << "Enter 4 to serach customer by contact number" << endl;
+                            cout << "Enter 5 to go back" << endl;
+                            cout << "Enter desired option: ";
+                            cin >> userOption;
                             fflush(stdin);
-                            if (tempInt != -1) {
-                                res = customerReportObj.read();
+
+                            if (userOption == 1) {
+                                cout << "Enter customer ID: ";
+                                cin >> tempInt;
+                                fflush(stdin);
+                                res = customerObj.searchID(tempInt);
                                 if (res == 404) {
-                                    res = gatherCustomerData(customerReportObj, tempInt);
-                                    if (res == 404) {
-                                        cout << "File operation error!" << endl;
-                                        cout << "Try again later." << endl;
-                                        cout << "Press enter to continue...";
-                                        getchar();
-                                    }
-                                    else if (res == 0) {
-                                        cout << "No Customer with this ID found!" << endl;
-                                        cout << "Press enter to continue...";
-                                        getchar();
-                                    }
-                                    else if (res == 1) {
-                                        res = customerReportObj.printReport();
-                                        if (res == 404) {
-                                            cout << "File operation error!" << endl;
-                                            cout << "Try again later." << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                        else if (res == 1) {
-                                            cout << "Report printed successfully!" << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                    }
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
                                 }
                                 else if (res == 1) {
-                                    if (customerReportObj.verifyUpdatedDateTime()) {
-                                        res = customerReportObj.printReport();
-                                        if (res == 404) {
-                                            cout << "File operation error!" << endl;
-                                            cout << "Try again later." << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                        else if (res == 1) {
-                                            cout << "Report printed successfully!" << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                    }
-                                    else {
+                                    res = customerReportObj.read();
+                                    if (res == 404) {
                                         res = gatherCustomerData(customerReportObj, tempInt);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
@@ -3015,8 +2989,331 @@ int employeeInterface() {
                                             }
                                         }
                                     }
+                                    else if (res == 1) {
+                                        if (customerReportObj.verifyUpdatedDateTime()) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherCustomerData(customerReportObj, tempInt);
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Customer with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = customerReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }                        
+                            }
+                            else if (userOption == 2) {
+                                cout << "Enter customer username: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = customerObj.searchUsername(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this username!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = customerReportObj.read();
+                                    if (res == 404) {
+                                        res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No Customer with this ID found!" << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                    }
+                                    else if (res == 1) {
+                                        if (customerReportObj.verifyUpdatedDateTime()) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Customer with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = customerReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 3) {
+                                cout << "Enter customer email address: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = customerObj.searchEmail(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this email address!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = customerReportObj.read();
+                                    if (res == 404) {
+                                        res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No Customer with this ID found!" << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                    }
+                                    else if (res == 1) {
+                                        if (customerReportObj.verifyUpdatedDateTime()) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Customer with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = customerReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 4) {
+                                cout << "Enter customer contact number: ";
+                                cin >> tempContact;
+                                fflush(stdin);
+                                res = customerObj.searchConatctNumber(tempContact);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No customer found with this contact number!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = customerReportObj.read();
+                                    if (res == 404) {
+                                        res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No Customer with this ID found!" << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                    }
+                                    else if (res == 1) {
+                                        if (customerReportObj.verifyUpdatedDateTime()) {
+                                            res = customerReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherCustomerData(customerReportObj, customerObj.getID());
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Customer with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = customerReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 5) {
+
+                            }
                         }
                         else {
                             cout << "You do not have access to perform this task!" << endl;
@@ -3026,55 +3323,32 @@ int employeeInterface() {
                     }
                     else if (userOption == 25) {
                         if (employeeObj.accessControl[7]) {
-                            cout << "Enter product ID to generate report or neter -1 to go back: ";
-                            cin >> tempInt;
+                            cout << "Enter 1 to search by product ID" << endl;
+                            cout << "Enter 2 to search by product name" << endl;
+                            cout << "Enter 3 to go back" << endl;
+                            cout << "Enter desired option: ";
+                            cin >> userOption;
                             fflush(stdin);
-                            if (tempInt != -1) {
-                                res = productReportObj.read();
+
+                            if (userOption == 1) {
+                                cout << "Enter product ID: ";
+                                cin >> tempInt;
+                                fflush(stdin);
+                                res = productObj.searchID(tempInt);
                                 if (res == 404) {
-                                    res = gatherProductData(productReportObj, tempInt);
-                                    if (res == 404) {
-                                        cout << "File operation error!" << endl;
-                                        cout << "Try again later." << endl;
-                                        cout << "Press enter to continue...";
-                                        getchar();
-                                    }
-                                    else if (res == 0) {
-                                        cout << "No Product with this ID found!" << endl;
-                                        cout << "Press enter to continue...";
-                                        getchar();
-                                    }
-                                    else if (res == 1) {
-                                        res = productReportObj.printReport();
-                                        if (res == 404) {
-                                            cout << "File operation error!" << endl;
-                                            cout << "Try again later." << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                        else if (res == 1) {
-                                            cout << "Report printed successfully!" << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                    }
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No product found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
                                 }
                                 else if (res == 1) {
-                                    if (productReportObj.verifyUpdatedDateTime()) {
-                                        res = productReportObj.printReport();
-                                        if (res == 404) {
-                                            cout << "File operation error!" << endl;
-                                            cout << "Try again later." << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                        else if (res == 1) {
-                                            cout << "Report printed successfully!" << endl;
-                                            cout << "Press enter to continue...";
-                                            getchar();
-                                        }
-                                    }
-                                    else {
+                                    res = productReportObj.read();
+                                    if (res == 404) {
                                         res = gatherProductData(productReportObj, tempInt);
                                         if (res == 404) {
                                             cout << "File operation error!" << endl;
@@ -3102,8 +3376,147 @@ int employeeInterface() {
                                             }
                                         }
                                     }
+                                    else if (res == 1) {
+                                        if (productReportObj.verifyUpdatedDateTime()) {
+                                            res = productReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherProductData(productReportObj, tempInt);
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Product with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = productReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }                        
+                            }
+                            else if (userOption == 2) {
+                                cout << "Enter product name: ";
+                                getline(cin, tempString);
+                                fflush(stdin);
+                                res = productObj.searchName(tempString);
+                                if (res == 404) {
+                                    cout << "File operation error!" << endl;
+                                    cout << "Try again later." << endl;
+                                    cout << "Press enter to continue...";
+                                    getchar();
+                                }
+                                else if (res == 0) {
+                                    cout << "No product found with this ID!" << endl;
+                                    cout << "Press enter to continue..." << endl;
+                                    getchar();
+                                }
+                                else if (res == 1) {
+                                    res = productReportObj.read();
+                                    if (res == 404) {
+                                        res = gatherProductData(productReportObj, productObj.getID());
+                                        if (res == 404) {
+                                            cout << "File operation error!" << endl;
+                                            cout << "Try again later." << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 0) {
+                                            cout << "No Product with this ID found!" << endl;
+                                            cout << "Press enter to continue...";
+                                            getchar();
+                                        }
+                                        else if (res == 1) {
+                                            res = productReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                    }
+                                    else if (res == 1) {
+                                        if (productReportObj.verifyUpdatedDateTime()) {
+                                            res = productReportObj.printReport();
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                cout << "Report printed successfully!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                        }
+                                        else {
+                                            res = gatherProductData(productReportObj, productObj.getID());
+                                            if (res == 404) {
+                                                cout << "File operation error!" << endl;
+                                                cout << "Try again later." << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 0) {
+                                                cout << "No Product with this ID found!" << endl;
+                                                cout << "Press enter to continue...";
+                                                getchar();
+                                            }
+                                            else if (res == 1) {
+                                                res = productReportObj.printReport();
+                                                if (res == 404) {
+                                                    cout << "File operation error!" << endl;
+                                                    cout << "Try again later." << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                                else if (res == 1) {
+                                                    cout << "Report printed successfully!" << endl;
+                                                    cout << "Press enter to continue...";
+                                                    getchar();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (userOption == 3) {
+
+                            }
                         }
                         else {
                             cout << "You do not have access to perform this task!" << endl;
