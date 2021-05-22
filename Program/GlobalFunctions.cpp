@@ -102,6 +102,7 @@ int fileTimeUpdate(const int indicator);
 int numberOfRecords(std::fstream& ptr, int classSize);
 bool passwordVerification(const std::string pass);
 
+// Verifies If Contact Number is correct
 bool contactNumberVerification(unsigned long int number)
 {
     int temp;
@@ -118,6 +119,7 @@ bool contactNumberVerification(unsigned long int number)
     return false;
 }
 
+// Interface menu for customer and function calling accordingly
 int customerInterface() {
     int userOption, res, tempParcelID;
     Customer customerObj;
@@ -330,6 +332,7 @@ int customerInterface() {
     
 }
 
+// Verifies date of issue, expiry and expense so user cannot add incorrect date
 bool dateVerification(const int day, const int month, const int year, const char type)
 {
     int response = 0;
@@ -508,6 +511,7 @@ bool dateVerification(const int day, const int month, const int year, const char
     return false;
 }
 
+// Verifies date of birth so user cannot add incorrect date
 bool dobVerification (const int day, const int month, const int year, const char condition) {
     int response = 0;
 
@@ -552,6 +556,7 @@ bool dobVerification (const int day, const int month, const int year, const char
     return false;
 }
 
+// Verifies email so user cannot add incorrect date
 bool emailAddressVerification(const std::string email) {
     /*The \w matches any character in any case any number of times.
     Then the \.|_ matches if a dot or underscore is present 0 or 1 times.
@@ -562,6 +567,7 @@ bool emailAddressVerification(const std::string email) {
     return regex_match(email, pattern);
 }
 
+// Interface menu for employee and function calling accordingly
 int employeeInterface() {
     Employee employeeObj, employeeObj2;
     Cow cowObj;
@@ -3626,6 +3632,7 @@ int employeeInterface() {
     }
 }
 
+// Updates date and time of files when opened to verify time 
 int fileTimeUpdate(const int indicator) {
     fstream file;
     FilesTime data;
@@ -3666,6 +3673,7 @@ int fileTimeUpdate(const int indicator) {
     return 1;
 }
 
+// Tells the number of records in the file
 int numberOfRecords(std::fstream& ptr, int classSize) {
     int size;
 
@@ -3679,6 +3687,7 @@ int numberOfRecords(std::fstream& ptr, int classSize) {
     return size;
 }
 
+// Verifies password include everything for security so user cannot enter less secure password
 bool passwordVerification(const std::string pass)
 {
     int x;
@@ -3717,6 +3726,7 @@ bool passwordVerification(const std::string pass)
     }
 }
 
+// Displays all the records of the cow
 int cowDetails() {
     fstream file;
     Cow obj;

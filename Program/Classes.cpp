@@ -87,6 +87,8 @@ typedef struct {
     Time time;
 } ProductSoldList;
 
+// Operator overloading
+
 bool operator== (const Time time1, const Time time2) {
     if (time1.hours == time2.hours) {
         if (time1.minutes == time2.minutes) {
@@ -114,6 +116,7 @@ bool operator== (const Date date1, const Date date2) {
 time_t now = time(0);
 tm *localTimeNow = localtime(&now);
 
+// File Locations
 string AccountsReportLoc = "../Files/AccountsReportData.txt";
 string AccountsReportFileLoc = "../Reports/Accounts Report.txt";
 string CowFileLoc = "../Files/CowData.txt";
@@ -135,6 +138,7 @@ string ProductReportLoc = "../Files/ProductReportData.txt";
 string ProductReportFileLoc = "../Reports/Product Report.txt";
 string FileTimeLoc = "../Files/FilesData.txt";
 
+// Class Prototypes
 class Report {
     protected:
         Date lastUpdatedDate;
@@ -511,6 +515,7 @@ class Product : protected Id {
         friend bool verifyProductID(const int id);
 };
 
+// Function prototypes
 bool contactNumberVerification(unsigned long int number);
 int cowDetails();
 int customerInterface();
@@ -552,6 +557,7 @@ AccountsReport :: ~AccountsReport() {
     
 }
 
+// Verifies date and time to check if new report is needed to be issued
 bool AccountsReport :: verifyUpdatedDateTime() {
     fstream file;
     FilesTime data;
@@ -587,6 +593,7 @@ bool AccountsReport :: verifyUpdatedDateTime() {
     
 }
 
+// Prints Report
 int AccountsReport :: printReport() {
     int counter;
     fstream AccountsReportFile;
@@ -653,6 +660,7 @@ int AccountsReport :: read() {
     return 1;
 }
 
+// Gather data for Accounts Report
 int gatherAccountsData(AccountsReport &obj) {
     fstream file;
     Invoice invoiceObj;
