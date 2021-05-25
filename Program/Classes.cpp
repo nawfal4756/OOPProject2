@@ -2214,6 +2214,7 @@ int Invoice :: calculations() {
 
     tax = subTotal * 0.13;
     total = subTotal + total;
+    amountToBePaid = total - amountPaid;
     return 1;
 }
 
