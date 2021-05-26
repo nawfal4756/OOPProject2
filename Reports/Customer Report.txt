@@ -1,2 +1,0 @@
-Invoice ID - Invoice Date - Invoice Time - Amount - AmountToBePaid
-6937 - 21/5/2021 - 21:14:3 - 1210 - 0
